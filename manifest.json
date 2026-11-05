@@ -1,0 +1,22 @@
+{
+  "name": "SEIKO Style Digital Clock",
+  "short_name": "卓上時計",
+  "description": "カレンダー・温湿度計付きのデジタル置時計アプリ",
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0d0f12",
+  "theme_color": "#0d0f12",
+  "icons": [
+    {
+      "src": "icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

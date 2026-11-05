@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Digital Clock - SEIKO Style</title>
+  
+  <!-- iOS PWA meta tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="卓上時計">
+  <meta name="theme-color" content="#0a0c0e">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <!-- DSEG 7-segment digital font CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dseg@0.46.0/css/dseg.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-green">
+  <!-- Outer Bezel Frame (Physical Clock Body) -->
+  <div class="clock-frame" id="clockFrame">
+    <div class="clock-brand">
+      <span class="brand-text">SEIKO</span>
+      <span class="brand-sub">RADIO CONTROLLED</span>
+    </div>
+
+    <!-- LCD Glass Display Panel -->
+    <div class="lcd-screen" id="lcdScreen">
+      <!-- Reflection Highlight Overlay -->
+      <div class="lcd-reflection"></div>
+      
+      <!-- Top Status Indicators -->
+      <div class="status-bar">
+        <div class="weather-location" id="weatherLocation" title="現在地の観測地点">
+          <span class="loc-icon">📍</span>
+          <span class="loc-text" id="locText">GPS連動中</span>
+        </div>
+        <div class="status-right-group">
+          <div class="radio-signal" id="radioSignal" title="電波・気象データ同期状態">
+            <svg class="signal-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path d="M12 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" fill="currentColor"/>
+              <path d="M8.5 13.5a5 5 0 0 1 7 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 10.5a8.5 8.5 0 0 1 12 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3.5 7.5a12 12 0 0 1 17 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="signal-text" id="signalText">WAVE</span>
+          </div>
+          <div class="alarm-indicator" id="alarmIndicator">
+            <span class="alarm-icon">⏰</span>
+            <span class="alarm-text">ALARM OFF</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Time Display Section -->
+      <div class="main-time-row">
+        <!-- Ghost background digits (for real LCD inactive segment effect) -->
+        <div class="time-container">
+          <div class="ghost-layer">
+            <span class="ghost-digits">88:88</span>
+            <span class="ghost-seconds">88</span>
+          </div>
+          <div class="active-layer">
+            <span class="active-digits" id="timeDigits">18:20</span>
+            <span class="active-seconds" id="secDigits">56</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider line -->
+      <div class="lcd-divider"></div>
+
+      <!-- Bottom Sensor & Calendar Row -->
+      <div class="bottom-info-row">
+        <!-- Temperature -->
+        <div class="info-block temp-block">
+          <div class="ghost-layer-small">
+            <span class="ghost-val">88.8</span><span class="unit">℃</span>
+          </div>
+          <div class="active-layer-small">
+            <span class="active-val" id="tempVal">26.6</span><span class="unit" id="tempUnit">℃</span>
+          </div>
+          <div class="block-label">TEMP</div>
+        </div>
+
+        <div class="v-separator"></div>
+
+        <!-- Humidity -->
+        <div class="info-block hum-block">
+          <div class="ghost-layer-small">
+            <span class="ghost-val">88</span><span class="unit">%</span>
+          </div>
+          <div class="active-layer-small">
+            <span class="active-val" id="humVal">44</span><span class="unit">%</span>
+          </div>
+          <div class="block-label">HUMI</div>
+        </div>
+
+        <div class="v-separator"></div>
+
+        <!-- Date & Day of Week -->
+        <div class="info-block date-block">
+          <div class="date-display">
+            <div class="ghost-layer-small">
+              <span class="ghost-val">88/88</span>
+            </div>
+            <div class="active-layer-small">
+              <span class="active-val" id="dateVal">5/21</span>
+            </div>
+          </div>
+          <div class="day-kanji" id="dayKanji">月</div>
+          <div class="rokuyo" id="rokuyoVal">友引</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Settings Trigger Button (Auto fades) -->
+  <button class="settings-toggle-btn" id="settingsToggleBtn" aria-label="設定">⚙️</button>
+
+  <!-- Settings Overlay Modal -->
+  <div class="settings-modal" id="settingsModal">
+    <div class="settings-content">
+      <div class="settings-header">
+        <h3>時計の設定</h3>
+        <button class="close-btn" id="closeSettingsBtn">✕</button>
+      </div>
+
+      <div class="setting-item">
+        <label>カラーテーマ</label>
+        <div class="theme-options">
+          <button class="theme-btn btn-green active" data-theme="theme-green" title="クラシックグリーン（写真のSEIKO色）"></button>
+          <button class="theme-btn btn-blue" data-theme="theme-blue" title="クールシアン"></button>
+          <button class="theme-btn btn-amber" data-theme="theme-amber" title="アンバーオレンジ"></button>
+          <button class="theme-btn btn-white" data-theme="theme-white" title="ピュアホワイト"></button>
+          <button class="theme-btn btn-red" data-theme="theme-red" title="夜間レッド"></button>
+        </div>
+      </div>
+
+      <div class="setting-item">
+        <label>明るさ（輝度ディマー）</label>
+        <input type="range" id="brightnessSlider" min="20" max="100" value="100">
+      </div>
+
+      <div class="setting-item">
+        <label>画面スリープ防止 (Wake Lock)</label>
+        <label class="switch">
+          <input type="checkbox" id="wakeLockSwitch" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+      <div class="setting-item">
+        <label>温湿度の現在地自動取得 (GPS天気連動)</label>
+        <label class="switch">
+          <input type="checkbox" id="gpsWeatherSwitch" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+      <div class="setting-item" id="citySelectSetting">
+        <label>プリセット観測地域（手動切替も可能）</label>
+        <select id="citySelect" class="city-select">
+          <option value="gps">📡 GPS自動取得 (最寄りアメダス観測所)</option>
+          <option value="sapporo">北海道・札幌</option>
+          <option value="sendai">宮城・仙台</option>
+          <option value="tokyo">東京</option>
+          <option value="yokohama">神奈川・横浜</option>
+          <option value="nagoya">愛知・名古屋</option>
+          <option value="kyoto">京都</option>
+          <option value="osaka">大阪</option>
+          <option value="hiroshima">広島</option>
+          <option value="fukuoka">福岡</option>
+          <option value="naha">沖縄・那覇</option>
+        </select>
+      </div>
+
+      <div class="setting-item" id="manualTempSetting">
+        <label>温度手動設定: <span id="manualTempLabel">26.6</span>℃</label>
+        <input type="range" id="manualTempSlider" min="10" max="40" step="0.1" value="26.6">
+      </div>
+
+      <div class="setting-item" id="manualHumSetting">
+        <label>湿度手動設定: <span id="manualHumLabel">44</span>%</label>
+        <input type="range" id="manualHumSlider" min="10" max="95" step="1" value="44">
+      </div>
+
+      <div class="setting-item">
+        <label>24時間表示 / 12時間表示</label>
+        <div class="button-group">
+          <button class="mode-btn active" id="btn24h">24時間</button>
+          <button class="mode-btn" id="btn12h">12時間</button>
+        </div>
+      </div>
+
+      <div class="settings-footer">
+        <button class="fullscreen-btn" id="fullscreenBtn">⛶ 全画面表示にする</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
+    }
+  </script>
+</body>
+</html>
