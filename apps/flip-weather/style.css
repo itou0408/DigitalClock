@@ -1,0 +1,331 @@
+:root {
+  --bg-color: #0b0d10;
+  --chassis-border: #22272e;
+  --clock-card-bg: #1c2128;
+  --clock-digit-color: #e6edf3;
+  --weather-card-bg: linear-gradient(145deg, #2b4566 0%, #1a2f4c 100%);
+  --weather-card-border: rgba(255, 255, 255, 0.12);
+  --text-main: #ffffff;
+  --text-muted: #8b949e;
+  --accent-cyan: #58a6ff;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Portal Navigation */
+.portal-back-btn {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  background: rgba(30, 35, 45, 0.85);
+  color: #adb5bd;
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  transition: all 0.2s;
+}
+
+.portal-back-btn:hover {
+  background: rgba(50, 60, 75, 0.95);
+  color: #ffffff;
+}
+
+.top-controls {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 100;
+}
+
+.city-selector {
+  background: rgba(30, 35, 45, 0.85);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  outline: none;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+
+/* Display Chassis Frame */
+.smart-display-frame {
+  width: 96vw;
+  max-width: 1240px;
+  aspect-ratio: 24 / 9;
+  background: #14171d;
+  border-radius: 20px;
+  padding: 12px;
+  box-shadow: 
+    0 0 0 2px var(--chassis-border),
+    0 25px 70px rgba(0, 0, 0, 0.8);
+  display: flex;
+}
+
+.smart-screen {
+  flex: 1;
+  background: #0d1015;
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  padding: 24px 32px;
+  gap: 28px;
+  align-items: center;
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.9);
+}
+
+/* Left Panel: Flip Clock */
+.clock-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+}
+
+.flip-clock-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.flip-colon {
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.4);
+  line-height: 1;
+  margin-top: -10px;
+  animation: colonBlink 1s infinite;
+}
+
+@keyframes colonBlink {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 0.2; }
+}
+
+/* Individual Flip Unit */
+.flip-unit {
+  position: relative;
+  flex: 1;
+  height: clamp(100px, 18vw, 190px);
+  perspective: 600px;
+}
+
+.flip-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-upper, .card-lower {
+  position: relative;
+  width: 100%;
+  height: 50%;
+  background: var(--clock-card-bg);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.card-upper {
+  border-radius: 14px 14px 0 0;
+  align-items: flex-end;
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.7);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.card-lower {
+  border-radius: 0 0 14px 14px;
+  align-items: flex-start;
+  box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.card-num {
+  font-family: 'Oswald', 'Inter', sans-serif;
+  font-size: clamp(3.8rem, 11vw, 8.8rem);
+  font-weight: 700;
+  color: var(--clock-digit-color);
+  line-height: 0;
+  letter-spacing: -2px;
+}
+
+.card-upper .card-num {
+  transform: translateY(50%);
+}
+
+.card-lower .card-num {
+  transform: translateY(-50%);
+}
+
+/* Horizontal card split shadow */
+.card-upper::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Sub info below flip clock */
+.clock-sub-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-left: 6px;
+  font-size: clamp(1rem, 1.6vw, 1.5rem);
+  font-weight: 700;
+  color: #adb5bd;
+}
+
+.sub-weather {
+  color: #ffffff;
+}
+
+/* Right Panel: Weather Card */
+.weather-panel {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.weather-card {
+  width: 100%;
+  height: 92%;
+  background: var(--weather-card-bg);
+  border-radius: 24px;
+  border: 1px solid var(--weather-card-border);
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Weather Header */
+.weather-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.weather-cond {
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+
+.weather-meta {
+  display: flex;
+  gap: 12px;
+  font-size: clamp(0.9rem, 1.2vw, 1.15rem);
+  color: #d0e2ff;
+  font-weight: 600;
+}
+
+.current-temp {
+  display: flex;
+  align-items: flex-start;
+}
+
+.temp-big {
+  font-size: clamp(3.2rem, 5.2vw, 5.5rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -3px;
+}
+
+.temp-deg {
+  font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+/* Hourly Forecast Track */
+.forecast-track {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 16px;
+}
+
+.forecast-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.slot-time {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #adb5bd;
+}
+
+.slot-icon {
+  font-size: 1.3rem;
+  margin: 2px 0;
+}
+
+.slot-temp {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.slot-pop {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #70b6ff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .smart-display-frame {
+    aspect-ratio: auto;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    padding: 0;
+  }
+  .smart-screen {
+    border-radius: 0;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    padding: 16px;
+    gap: 16px;
+  }
+  .forecast-track {
+    gap: 4px;
+  }
+}

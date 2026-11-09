@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>LED Dot Matrix Display (LEDドットマトリクス電光掲示板)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@900&family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Return -->
+  <a href="../../portal.html" class="portal-back-btn" title="ポータル画面に戻る">← ポータルへ戻る</a>
+
+  <!-- Top Controller Bar -->
+  <div class="top-controls">
+    <div class="input-group">
+      <input type="text" id="msgInput" value="餃子" placeholder="表示したい文字（漢字・英数）" maxlength="40">
+      <button id="updateMsgBtn" class="ctrl-btn primary">表示</button>
+    </div>
+
+    <div class="mode-group">
+      <button id="clockModeBtn" class="ctrl-btn">🕒 時計</button>
+      <button id="scrollModeBtn" class="ctrl-btn active">↔ スクロール</button>
+      <select id="colorSelect" class="ctrl-select">
+        <option value="amber" selected>アンバー黄 (写真再現)</option>
+        <option value="red">レッド (赤色LED)</option>
+        <option value="green">グリーン (緑色LED)</option>
+        <option value="cyan">シアン (青緑LED)</option>
+        <option value="white">ホワイト (白色LED)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Physical Display Chassis Frame -->
+  <div class="matrix-chassis">
+    <!-- Outer Colorful Chaser LED Border -->
+    <div class="chaser-border-wrapper">
+      <canvas id="borderLedsCanvas" class="border-canvas"></canvas>
+
+      <!-- Inner Matrix Display Screen -->
+      <div class="matrix-screen-box">
+        <canvas id="matrixCanvas" class="matrix-canvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Preset Pills -->
+  <div class="preset-pills">
+    <button class="pill-btn" data-text="餃子">🥟 餃子</button>
+    <button class="pill-btn" data-text="営業中">🏮 営業中</button>
+    <button class="pill-btn" data-text="本日の特売！">🏷️ 本日の特売！</button>
+    <button class="pill-btn" data-text="WELCOME TO TOKYO">✈️ WELCOME</button>
+    <button class="pill-btn" data-text="電車がまいります">🚆 電車がまいります</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

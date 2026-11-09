@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Flip Clock & Weather Smart Display (フリップ時計＆天気ディスプレイ)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Oswald:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Return -->
+  <a href="../../portal.html" class="portal-back-btn" title="ポータル画面に戻る">← ポータルへ戻る</a>
+
+  <!-- Top City / Setting Controls -->
+  <div class="top-controls">
+    <select id="citySelect" class="city-selector">
+      <option value="toyama" selected>富山</option>
+      <option value="tokyo">東京</option>
+      <option value="osaka">大阪</option>
+      <option value="sapporo">札幌</option>
+      <option value="fukuoka">福岡</option>
+      <option value="nagoya">名古屋</option>
+    </select>
+  </div>
+
+  <!-- Smart Display Physical Chassis -->
+  <div class="smart-display-frame">
+    <div class="smart-screen">
+
+      <!-- Left: Flip Clock Section -->
+      <section class="clock-panel">
+        <div class="flip-clock-wrapper">
+          <!-- Hours -->
+          <div class="flip-unit" id="flipHours">
+            <div class="flip-card">
+              <div class="card-upper"><span class="card-num">11</span></div>
+              <div class="card-lower"><span class="card-num">11</span></div>
+            </div>
+          </div>
+
+          <div class="flip-colon">:</div>
+
+          <!-- Minutes -->
+          <div class="flip-unit" id="flipMinutes">
+            <div class="flip-card">
+              <div class="card-upper"><span class="card-num">49</span></div>
+              <div class="card-lower"><span class="card-num">49</span></div>
+            </div>
+          </div>
+
+          <div class="flip-colon">:</div>
+
+          <!-- Seconds -->
+          <div class="flip-unit" id="flipSeconds">
+            <div class="flip-card">
+              <div class="card-upper"><span class="card-num">47</span></div>
+              <div class="card-lower"><span class="card-num">47</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clock Bottom Sub Info -->
+        <div class="clock-sub-info">
+          <span class="sub-date" id="clockSubDate">Mon, Nov 24</span>
+          <span class="sub-weather" id="clockSubWeather">⛅ 15°</span>
+        </div>
+      </section>
+
+      <!-- Right: Detailed Weather Card -->
+      <section class="weather-panel">
+        <div class="weather-card">
+          <!-- Main Weather Header -->
+          <div class="weather-header">
+            <div class="weather-headline">
+              <h2 class="weather-cond" id="weatherCondText">曇りがち</h2>
+              <div class="weather-meta">
+                <span id="cityNameLabel">富山</span>
+                <span class="meta-highlow">↑<span id="tempHigh">16</span>° ↓<span id="tempLow">14</span>°</span>
+                <span class="meta-hum">💧<span id="humVal">39</span>%</span>
+              </div>
+            </div>
+
+            <div class="current-temp">
+              <span class="temp-big" id="currentTempBig">15</span><span class="temp-deg">°</span>
+            </div>
+          </div>
+
+          <!-- Hourly Forecast Horizontal Track -->
+          <div class="forecast-track" id="forecastTrack">
+            <!-- 7 Hourly Forecast Slots -->
+            <div class="forecast-slot">
+              <span class="slot-time">12</span>
+              <span class="slot-icon">🌧</span>
+              <span class="slot-temp">12°</span>
+              <span class="slot-pop">80%</span>
+            </div>
+            <div class="forecast-slot">
+              <span class="slot-time">15</span>
+              <span class="slot-icon">⛅</span>
+              <span class="slot-temp">11°</span>
+              <span class="slot-pop">8%</span>
+            </div>
+            <div class="forecast-slot">
+              <span class="slot-time">18</span>
+              <span class="slot-icon">⛅</span>
+              <span class="slot-temp">11°</span>
+              <span class="slot-pop">4%</span>
+            </div>
+            <div class="forecast-slot">
+              <span class="slot-time">21</span>
+              <span class="slot-icon">☁️</span>
+              <span class="slot-temp">10°</span>
+              <span class="slot-pop">0%</span>
+            </div>
+            <div class="forecast-slot">
+              <span class="slot-time">0</span>
+              <span class="slot-icon">⛅</span>
+              <span class="slot-temp">12°</span>
+              <span class="slot-pop">0%</span>
+            </div>
+            <div class="forecast-slot">
+              <span class="slot-time">3</span>
+              <span class="slot-icon">⛅</span>
+              <span class="slot-temp">15°</span>
+              <span class="slot-pop">0%</span>
+            </div>
+            <div class="forecast-slot">
+              <span class="slot-time">6</span>
+              <span class="slot-icon">⛅</span>
+              <span class="slot-temp">14°</span>
+              <span class="slot-pop">10%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

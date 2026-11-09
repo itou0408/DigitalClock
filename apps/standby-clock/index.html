@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>iOS StandBy Clock & Calendar (スタンバイ風時計＆カレンダー)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;600;700&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-default">
+
+  <!-- Navigation Return -->
+  <a href="../../portal.html" class="portal-back-btn" title="ポータル画面に戻る">← ポータルへ戻る</a>
+
+  <!-- Top Controls -->
+  <div class="top-controls">
+    <button id="themeToggleBtn" class="control-btn" title="ナイトモード切替">🌙 ナイトモード</button>
+  </div>
+
+  <!-- Physical Stand Frame / Screen Bezel -->
+  <div class="standby-container">
+    <div class="standby-screen">
+
+      <!-- Left Widget: Analog Clock -->
+      <section class="widget-left">
+        <div class="analog-clock" id="analogClock">
+          <!-- Dial Numerals -->
+          <div class="numeral num-12">12</div>
+          <div class="numeral num-1">1</div>
+          <div class="numeral num-2">2</div>
+          <div class="numeral num-3">3</div>
+          <div class="numeral num-4">4</div>
+          <div class="numeral num-5">5</div>
+          <div class="numeral num-6">6</div>
+          <div class="numeral num-7">7</div>
+          <div class="numeral num-8">8</div>
+          <div class="numeral num-9">9</div>
+          <div class="numeral num-10">10</div>
+          <div class="numeral num-11">11</div>
+
+          <!-- Ticks -->
+          <div class="clock-ticks" id="clockTicks"></div>
+
+          <!-- Hands -->
+          <div class="hand hour-hand" id="hourHand"></div>
+          <div class="hand minute-hand" id="minuteHand"></div>
+          <div class="hand second-hand" id="secondHand"></div>
+          <div class="center-pivot"></div>
+        </div>
+      </section>
+
+      <!-- Right Widget: Month Calendar -->
+      <section class="widget-right">
+        <div class="calendar-card">
+          <header class="cal-header">
+            <h2 class="cal-month-title" id="calMonthTitle">11月</h2>
+          </header>
+
+          <div class="cal-weekdays">
+            <span>日</span>
+            <span>月</span>
+            <span>火</span>
+            <span>水</span>
+            <span>木</span>
+            <span>金</span>
+            <span>土</span>
+          </div>
+
+          <div class="cal-days-grid" id="calDaysGrid">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

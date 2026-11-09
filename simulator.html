@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Android Device Simulator - SEIKO Digital Clock</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-desk: #12151a;
+      --panel-bg: rgba(26, 31, 38, 0.85);
+      --accent: #3ddc84; /* Android Green */
+      --text-main: #f0f3f6;
+      --text-muted: #8b949e;
+      --border: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 30%, #1f2530 0%, #0d0f13 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      user-select: none;
+    }
+
+    /* Top Control Toolbar */
+    .toolbar {
+      width: 100%;
+      max-width: 1200px;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      border-radius: 0 0 16px 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.3px;
+    }
+
+    .android-icon {
+      width: 24px;
+      height: 24px;
+      fill: var(--accent);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.3);
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .control-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    select, button {
+      background: #252c37;
+      color: var(--text-main);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    select:hover, button:hover {
+      background: #2f3745;
+      border-color: var(--accent);
+    }
+
+    button.active {
+      background: var(--accent);
+      color: #0b130e;
+      font-weight: 600;
+      border-color: var(--accent);
+    }
+
+    /* Device Container */
+    .stage {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      width: 100%;
+      perspective: 1200px;
+    }
+
+    /* Android Physical Device Frame */
+    .device-shell {
+      position: relative;
+      background: #1b1e22;
+      border-radius: 46px;
+      padding: 12px;
+      box-shadow: 
+        0 0 0 2px #383e46,
+        0 0 0 5px #121417,
+        0 25px 60px rgba(0, 0, 0, 0.7),
+        0 10px 20px rgba(0, 0, 0, 0.5);
+      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Antenna / Button Accents */
+    .device-shell::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      right: 120px;
+      width: 60px;
+      height: 3px;
+      background: #444b54;
+      border-radius: 2px 2px 0 0;
+    }
+
+    /* Screen Bezel & Screen */
+    .screen-wrapper {
+      position: relative;
+      background: #000;
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.9);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Android System UI: Status Bar */
+    .android-status-bar {
+      height: 28px;
+      background: #0d0f12;
+      color: #e3e3e3;
+      font-family: 'Roboto', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    /* Punch-hole camera (Pixel style) */
+    .punch-hole {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #050607;
+      border-radius: 50%;
+      border: 1px solid #1a1d21;
+      z-index: 20;
+      box-shadow: inset 0 0 2px #000;
+      pointer-events: none;
+    }
+
+    /* Landscape punch-hole (on the left edge) */
+    .device-shell.landscape .punch-hole {
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* Portrait punch-hole (top center) */
+    .device-shell.portrait .punch-hole {
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* App Frame (Iframe) */
+    .clock-iframe {
+      border: none;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      display: block;
+    }
+
+    /* Android Navigation Bar (Gesture Pill) */
+    .android-nav-bar {
+      height: 20px;
+      background: #0d0f12;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .gesture-pill {
+      width: 90px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 3px;
+    }
+
+    /* Fullscreen (PWA) Mode: hide System Bars */
+    .device-shell.pwa-fullscreen .android-status-bar,
+    .device-shell.pwa-fullscreen .android-nav-bar {
+      display: none !important;
+    }
+
+    /* Desk Stand Perspective Mode */
+    .device-shell.stand-mode {
+      transform: rotateX(16deg) rotateY(-8deg) rotateZ(1deg);
+      box-shadow: 
+        -15px 35px 70px rgba(0, 0, 0, 0.8),
+        0 15px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Footer info */
+    .info-footer {
+      padding: 12px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Simulator Toolbar -->
+  <header class="toolbar">
+    <div class="brand">
+      <svg class="android-icon" viewBox="0 0 24 24">
+        <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993s-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993s-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 0 0-.1521-.5676.416.416 0 0 0-.5676.1521l-2.0223 3.503c-1.5284-.6983-3.2386-1.0872-5.0868-1.0872-1.8483 0-3.5585.3889-5.0869 1.0872L4.8808 5.4467a.4161.4161 0 0 0-.5677-.1521.4157.4157 0 0 0-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.741h24c-.3432-4.0821-2.6889-7.5543-6.1185-9.4196"/>
+      </svg>
+      <span>Android Device Simulator</span>
+    </div>
+
+    <div class="controls">
+      <!-- Device Preset Selector -->
+      <div class="control-group">
+        <span class="control-label">端末</span>
+        <select id="deviceSelect">
+          <option value="pixel7" data-w="915" data-h="412" selected>Google Pixel 7 (915 × 412)</option>
+          <option value="galaxyS23" data-w="915" data-h="393">Samsung Galaxy S23 (915 × 393)</option>
+          <option value="xperia1" data-w="960" data-h="384">Sony Xperia 1 V (960 × 384)</option>
+          <option value="pixelTablet" data-w="1120" data-h="700">Pixel Tablet (1120 × 700)</option>
+        </select>
+      </div>
+
+      <!-- Orientation Toggle -->
+      <div class="control-group">
+        <span class="control-label">向き</span>
+        <button id="orientBtn" title="横画面/縦画面の切り替え">🔄 横向き (Landscape)</button>
+      </div>
+
+      <!-- PWA Fullscreen Toggle -->
+      <div class="control-group">
+        <span class="control-label">表示</span>
+        <button id="pwaBtn" class="active" title="PWA全画面モード（ステータスバーを隠す）">📱 PWA全画面</button>
+      </div>
+
+      <!-- 3D Stand Perspective Toggle -->
+      <div class="control-group">
+        <span class="control-label">卓上スタンド</span>
+        <button id="standBtn" title="斜め卓上スタンド視点">📐 スタンド視線</button>
+      </div>
+
+      <!-- Direct Open in New Tab -->
+      <button id="openDirectBtn">↗ 実寸表示</button>
+    </div>
+  </header>
+
+  <!-- Simulation Stage -->
+  <main class="stage">
+    <div class="device-shell landscape pwa-fullscreen" id="deviceShell">
+      <!-- Punch Hole Camera -->
+      <div class="punch-hole"></div>
+
+      <!-- Screen Wrapper -->
+      <div class="screen-wrapper" id="screenWrapper">
+        <!-- Android Status Bar -->
+        <div class="android-status-bar" id="statusBar">
+          <div class="status-left">
+            <span id="androidClock">12:00</span>
+          </div>
+          <div class="status-right">
+            <span>5G</span>
+            <span>📶</span>
+            <span>🔋 92%</span>
+          </div>
+        </div>
+
+        <!-- Clock App IFrame -->
+        <iframe src="index.html" class="clock-iframe" id="clockIframe" title="SEIKO Digital Clock App"></iframe>
+
+        <!-- Android Gesture Bar -->
+        <div class="android-nav-bar" id="navBar">
+          <div class="gesture-pill"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="info-footer">
+    SEIKO Style Digital Clock — Android Emulation Environment (Viewport & Resolution Synchronized)
+  </footer>
+
+  <script>
+    const deviceSelect = document.getElementById('deviceSelect');
+    const orientBtn = document.getElementById('orientBtn');
+    const pwaBtn = document.getElementById('pwaBtn');
+    const standBtn = document.getElementById('standBtn');
+    const openDirectBtn = document.getElementById('openDirectBtn');
+    const deviceShell = document.getElementById('deviceShell');
+    const screenWrapper = document.getElementById('screenWrapper');
+    const androidClock = document.getElementById('androidClock');
+
+    let isLandscape = true;
+    let isPwaFullscreen = true;
+    let isStandMode = false;
+
+    // Apply Dimensions
+    function applyDimensions() {
+      const selectedOption = deviceSelect.options[deviceSelect.selectedIndex];
+      const baseW = parseInt(selectedOption.dataset.w, 10);
+      const baseH = parseInt(selectedOption.dataset.h, 10);
+
+      const width = isLandscape ? baseW : baseH;
+      const height = isLandscape ? baseH : baseW;
+
+      screenWrapper.style.width = width + 'px';
+      screenWrapper.style.height = height + 'px';
+
+      deviceShell.className = `device-shell ${isLandscape ? 'landscape' : 'portrait'} ${isPwaFullscreen ? 'pwa-fullscreen' : ''} ${isStandMode ? 'stand-mode' : ''}`;
+    }
+
+    deviceSelect.addEventListener('change', applyDimensions);
+
+    // Orientation toggle
+    orientBtn.addEventListener('click', () => {
+      isLandscape = !isLandscape;
+      orientBtn.textContent = isLandscape ? '🔄 横向き (Landscape)' : '🔄 縦向き (Portrait)';
+      applyDimensions();
+    });
+
+    // PWA Fullscreen toggle
+    pwaBtn.addEventListener('click', () => {
+      isPwaFullscreen = !isPwaFullscreen;
+      pwaBtn.classList.toggle('active', isPwaFullscreen);
+      pwaBtn.textContent = isPwaFullscreen ? '📱 PWA全画面' : '🌐 通常ブラウザ';
+      applyDimensions();
+    });
+
+    // Stand 3D Mode toggle
+    standBtn.addEventListener('click', () => {
+      isStandMode = !isStandMode;
+      standBtn.classList.toggle('active', isStandMode);
+      applyDimensions();
+    });
+
+    // Open direct
+    openDirectBtn.addEventListener('click', () => {
+      window.open('index.html', '_blank');
+    });
+
+    // Sync Android Status Bar Clock with system time
+    function updateAndroidClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      androidClock.textContent = `${h}:${m}`;
+    }
+    updateAndroidClock();
+    setInterval(updateAndroidClock, 1000);
+
+    // Initialize
+    applyDimensions();
+  </script>
+</body>
+</html>

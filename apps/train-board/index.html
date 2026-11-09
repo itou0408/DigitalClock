@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>鉄道発車標ディスプレイ (Train Departure Board)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@500;700;800;900&family=Share+Tech+Mono&family=Teko:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Return -->
+  <a href="../../portal.html" class="portal-back-btn" title="ポータル画面に戻る">← ポータルへ戻る</a>
+
+  <!-- Top Setting Toggle -->
+  <button id="settingsToggle" class="settings-btn" title="表示・路線設定">⚙ 設定</button>
+
+  <!-- Physical Display Outer Bezel -->
+  <div class="display-chassis">
+    <div class="display-screen" id="displayScreen">
+
+      <!-- Header Bar -->
+      <header class="board-header">
+        <div class="line-name-area">
+          <span class="line-icon">🚆</span>
+          <h1 class="line-title" id="lineTitle">あいの風とやま鉄道線</h1>
+        </div>
+
+        <div class="clock-badge">
+          <span class="clock-label">現在時刻</span>
+          <span class="clock-digits" id="currentClock">20:56:00</span>
+        </div>
+      </header>
+
+      <!-- Departure Table -->
+      <main class="departure-table" id="trainList">
+        <!-- Departure Row 1 -->
+        <div class="train-row" id="row0">
+          <div class="col-type"><span class="type-badge local">普通</span></div>
+          <div class="col-time"><span class="dep-time">20:56</span></div>
+          <div class="col-dest">
+            <span class="dest-name">泊</span>
+            <span class="via-info">富山・魚津方面</span>
+          </div>
+          <div class="col-status">
+            <span class="status-badge alert">まもなく発車</span>
+          </div>
+        </div>
+
+        <!-- Departure Row 2 -->
+        <div class="train-row" id="row1">
+          <div class="col-type"><span class="type-badge local">普通</span></div>
+          <div class="col-time"><span class="dep-time">21:05</span></div>
+          <div class="col-dest">
+            <span class="dest-name">金沢</span>
+            <span class="via-info">高岡・金沢方面</span>
+          </div>
+          <div class="col-status">
+            <span class="status-badge warn">あと 9 分</span>
+          </div>
+        </div>
+
+        <!-- Departure Row 3 -->
+        <div class="train-row" id="row2">
+          <div class="col-type"><span class="type-badge rapid">快速</span></div>
+          <div class="col-time"><span class="dep-time">21:24</span></div>
+          <div class="col-dest">
+            <span class="dest-name">富山</span>
+            <span class="via-info">魚津方面</span>
+          </div>
+          <div class="col-status">
+            <span class="status-badge info">あと 28 分</span>
+          </div>
+        </div>
+      </main>
+
+      <!-- Bottom Ticker Notice -->
+      <footer class="board-footer">
+        <div class="ticker-wrapper">
+          <span class="ticker-label">【運行情報】</span>
+          <div class="ticker-content">
+            <span class="ticker-text" id="tickerText">平常通り運行しております。足元にご注意の上ご乗車ください。駆け込み乗車は危険ですのでおやめください。</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <!-- Settings Modal Dialog -->
+  <div class="settings-modal" id="settingsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>発車標の設定</h2>
+        <button id="closeSettings" class="close-btn">×</button>
+      </div>
+
+      <div class="setting-item">
+        <label for="presetSelect">路線プリセット</label>
+        <select id="presetSelect">
+          <option value="ainokaze" selected>あいの風とやま鉄道（富山・泊・金沢）</option>
+          <option value="yamanote">JR山手線（東京・品川・新宿・渋谷）</option>
+          <option value="tokaido">JR東海道線（横浜・小田原・熱海）</option>
+          <option value="chuo">JR中央線快速（御茶ノ水・新宿・八王子）</option>
+          <option value="hakodate">JR函館本線（小樽・札幌・岩見沢）</option>
+          <option value="shinkansen">北陸新幹線（長野・大宮・東京方面）</option>
+          <option value="custom">カスタム路線（自由入力）</option>
+        </select>
+      </div>
+
+      <div class="setting-item" id="customInputGroup" style="display: none;">
+        <label for="customLineName">カスタム路線名</label>
+        <input type="text" id="customLineName" placeholder="〇〇線 / 〇〇駅発車案内">
+      </div>
+
+      <div class="setting-item">
+        <label for="intervalSelect">発車間隔シミュレーション</label>
+        <select id="intervalSelect">
+          <option value="real">現在時刻連動（リアルタイム自動循環）</option>
+          <option value="5min">5分おき発車（テスト用）</option>
+          <option value="10min" selected>10分おき発車（標準）</option>
+        </select>
+      </div>
+
+      <div class="setting-item">
+        <label for="tickerInput">運行案内テロップ</label>
+        <input type="text" id="tickerInput" value="平常通り運行しております。お忘れ物にご注意ください。">
+      </div>
+
+      <div class="modal-actions">
+        <button id="saveSettingsBtn" class="btn-primary">保存して反映</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
